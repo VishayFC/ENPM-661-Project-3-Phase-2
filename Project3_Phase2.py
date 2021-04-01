@@ -96,3 +96,16 @@ def removing_from_queue():
 def euclidean_distance(node):
     dist = ((goal[0] - node[0])**2 + (goal[1] - node[1])**2)**(1/2)
     return dist
+
+def check_if_visited(check, cs):
+    nod = check.current        #checking with the red value of canvas
+    if canvas[(canvas_size[0] - 1) - nod[0],nod[1],2] == 255:
+        if duplicate_costcanvas[(canvas_size[0] - 1) - nod[0],nod[1]] > cs:
+            ind = visited_child_list.index(check.current)
+            visited_parent_list[ind] = check.parent
+            visited_child_cost[ind] = cs
+            #print("replaced")
+
+        ####################
+        #############check if the cost previously computed is less or not if not then replace the parent
+        return None
