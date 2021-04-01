@@ -91,3 +91,8 @@ def removing_from_queue():
     #for_frames.append(visited_list)
     #print("queue size ",queue1.size())
     return check, cs
+
+#calculate euclidean distance
+def euclidean_distance(node):
+    dist = ((goal[0] - node[0])**2 + (goal[1] - node[1])**2)**(1/2)
+    return dist
