@@ -156,3 +156,13 @@ def super_move_function(currentnode, cs):
     #new_child = np.array(new_child)
 
     return new_child, node
+
+#checking if the node is in obstacle space and returns ones which are not in the obstacle space in a list and the parent node
+def check_if_in_obstacle_space(children, parent1):
+    valid_children = list()
+    for i in children:
+        if canvas[(canvas_size[0] - 1) - i[0][0], i[0][1], 0] == 255:
+            continue
+        valid_children.append(i)
+
+    return valid_children, parent1
