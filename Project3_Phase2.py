@@ -54,3 +54,29 @@ def obstacles(st):
         canvas[canvas_size[0]-1-st[0]][st[1]][0] = 255
         #print("coordinate is in C shape")
         return None
+    elif (st[1]+1 >= 200 and st[1]+1 <= 230 and st[0]+1 <= 280 and st[0]+1 >= 270):
+        canvas[canvas_size[0]-1-st[0]][st[1]][0] = 255
+        #print("coordinate is in C shape")
+        return None
+
+    elif (st[1]+1 >= 200 and st[1]+1 <= 230 and st[0]+1 <= 240 and st[0]+1 >= 230):
+        canvas[canvas_size[0]-1-st[0]][st[1]][0] = 255
+        #print("coordinate is in C shape")
+        return None
+
+    elif (st[0]+1) + (1.42814 * (st[1]+1)) >= 176.5511 and (st[0]+1) - (0.7 * (st[1]+1)) >= 74.39 and (st[0]+1) + (1.42814 * (st[1]+1)) <= 428.06815 and (st[0]+1) - (0.7 * (st[1]+1)) <= 98.80545:
+        canvas[canvas_size[0]-1-st[0]][st[1]][0] = 255
+        #print("coordinate is in rectangle")
+        return None
+
+    elif st[1] < 1 or st[1] >= canvas_size[1] - 1:
+        canvas[st[0]][st[1]][0] = 255
+        #print("coordinate is out of the map boundary")
+        return None
+
+    elif st[0] < 1  or st[0] >= canvas_size[0] - 1:
+        canvas[st[0]][st[1]][0] = 255
+        #print("coordinate is out of the map boundary")
+        return None
+    else :
+        return st
