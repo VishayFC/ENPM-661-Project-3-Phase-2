@@ -109,3 +109,13 @@ def check_if_visited(check, cs):
         ####################
         #############check if the cost previously computed is less or not if not then replace the parent
         return None
+    canvas[(canvas_size[0] - 1) - nod[0], nod[1], 2] = 255    #marking visited by changing the color of red band
+    duplicate_costcanvas[(canvas_size[0] - 1) - nod[0], nod[1],0] = cs
+    #print(duplicate_costcanvas)
+    visited_child_list.append(check.current)
+    visited_parent_list.append(check.parent)
+    visited_child_cost.append(cs)
+    #cv2.imshow("window",canvas[1:301, 1:401])
+    out.write(canvas[1:301, 1:401])
+    #cv2.waitKey(1)
+    return check, cs
