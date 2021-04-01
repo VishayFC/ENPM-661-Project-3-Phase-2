@@ -133,3 +133,26 @@ def super_move_function(currentnode, cs):
     def theta60(node1, effort1, theta1):
 
         return
+
+    def theta_30(node1, effort1, theta1):
+
+        return
+
+    def theta_60(node1, effort1, theta1):
+
+        return
+
+
+    new_child = list()
+    node = currentnode.current
+    orient = currentnode.theta
+    effort = cs
+    new_child.append(moveleft(node, effort, orient))
+    new_child.append(moveright(node, effort, orient))
+    new_child.append(moveup(node, effort, orient))
+    new_child.append(movedown(node, effort, orient))
+    new_child.append(up_left(node, effort, orient))
+
+    #new_child = np.array(new_child)
+
+    return new_child, node
