@@ -119,3 +119,17 @@ def check_if_visited(check, cs):
     out.write(canvas[1:301, 1:401])
     #cv2.waitKey(1)
     return check, cs
+
+#this function performs actions and gets children
+def super_move_function(currentnode, cs):
+
+    def theta30(node1, effort1, theta1):
+        child = node1.copy()
+        new_orient = theta1 + math.cos(math.pi/6)
+        
+
+        return
+
+    def theta60(node1, effort1, theta1):
+
+        return
