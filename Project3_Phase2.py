@@ -80,3 +80,14 @@ def obstacles(st):
         return None
     else :
         return st
+    
+    
+#removes from the queue
+def removing_from_queue():
+    #print(queue1.size1())
+    check = queue1.remove()
+    cs = duplicate_costqueue.pop()
+    #print("current ",check.current)
+    #for_frames.append(visited_list)
+    #print("queue size ",queue1.size())
+    return check, cs
