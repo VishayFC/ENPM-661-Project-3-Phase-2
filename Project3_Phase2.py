@@ -166,3 +166,21 @@ def check_if_in_obstacle_space(children, parent1):
         valid_children.append(i)
 
     return valid_children, parent1
+
+
+
+#compares new children with goal state and adds them to the queue if the child is not the goal state
+def compare_with_goal(ultimate_children, parent1):
+    for child in ultimate_children:
+        if child[0] == goal:
+            print("\n Goal has been reached \n")
+            return child[0], parent1, child[1]
+        else:
+            astar_cost = child[1] + euclidean_distance(child[0])
+            astar_cost_list.append(astar_cost)
+            astar_cost_list.sort(reverse = True)
+            index_to_append_in_queue = astar_cost_list.index(astar_cost)
+            duplicate_costqueue.insert(index_to_append_in_queue, child[1])
+            queue1.add(node(child[0], parent1), index_to_append_in_queue)
+
+    return None
