@@ -231,3 +231,36 @@ while n > 0:
     #start.append(0)
     goal.append(int(y2)+1)
     goal.append(int(x2)+1)
+    #goal = np.array(goal)
+    #goal.append(1)
+    lis = [start, goal]
+    strt = list()
+    count = 0
+    for i in lis:
+        strt.append(obstacles(i))
+    if strt[0] == None or strt[1] == None:
+        print("Error: One of the entered point is either in obstacle space or out of map boundary")
+        continue
+    else:
+        n = 0
+
+#canvas[301 - goal[0]][goal[1]][2] = 255
+
+
+first_node = node(start, None)
+queue1 = queue()
+queue1.add(first_node,0)
+duplicate_costqueue.append(0)
+
+
+#calling the main functions of the Dijkstra
+while True:
+    new_parent = None
+    while new_parent is None:
+        new_node, cos = removing_from_queue()
+        new_parent= check_if_visited(new_node, cos)
+    children_list, parent = super_move_function(new_parent[0], new_parent[1])
+    filtered_children, same_parent = check_if_in_obstacle_space(children_list, parent)
+    child_parent = compare_with_goal(filtered_children, same_parent)
+    if child_parent is not None:
+        break
