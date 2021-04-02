@@ -184,3 +184,20 @@ def compare_with_goal(ultimate_children, parent1):
             queue1.add(node(child[0], parent1), index_to_append_in_queue)
 
     return None
+
+###########
+####check the location of the cost at visited list and append at that index in the queue
+######cuurently there are errors in implementation
+
+
+#main body of the code from this line and below
+canvas_size = [302,402, 3]
+canvas = np.zeros((canvas_size[0],canvas_size[1], canvas_size[2]))
+visited_child_list = list()
+visited_parent_list = list()
+visited_child_cost = list()
+astar_cost_list = list()
+duplicate_costqueue = list()
+duplicate_costcanvas = np.zeros((canvas_size[0],canvas_size[1], 1))
+canvas = canvas.astype(np.uint8)
+for_frames = list()
