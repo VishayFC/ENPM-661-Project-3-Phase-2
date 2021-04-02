@@ -201,3 +201,33 @@ duplicate_costqueue = list()
 duplicate_costcanvas = np.zeros((canvas_size[0],canvas_size[1], 1))
 canvas = canvas.astype(np.uint8)
 for_frames = list()
+
+
+#marking obstacles
+for i in range(canvas_size[0]):
+    for j in range(canvas_size[1]):
+        obstacles([i,j])
+
+
+
+
+####################################
+#################################
+#the new node to be removed from the queue should be the one having least cost
+
+
+#taking the start and goal node from the user and checking if in obstacle space
+n = 1
+while n > 0:
+    start = list()
+    goal = list()
+    x1 = input("Enter the x co-ordinate of the start point: ")
+    y1 = input("Enter the y co-ordinate of the start point: ")
+    x2 = input("Enter the x co-ordinate of the goal point: ")
+    y2 = input("Enter the y co-ordinate of the goal point: ")
+    start.append(int(y1)+1)
+    start.append(int(x1)+1)
+    #start = np.array(start)
+    #start.append(0)
+    goal.append(int(y2)+1)
+    goal.append(int(x2)+1)
