@@ -123,24 +123,47 @@ def check_if_visited(check, cs):
 #this function performs actions and gets children
 def super_move_function(currentnode, cs):
 
+    def theta0(node1, effort1, theta1):
+        child = node1.copy()
+        direction_to_move = theta1
+        child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
+        child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
+        #print("parent ",node1)
+        #print("child ",child)
+        effort1 = effort1 + step_size
+        return [child, effort1, direction_to_move]
+
     def theta30(node1, effort1, theta1):
         child = node1.copy()
-        new_orient = theta1 + math.cos(math.pi/6)
-        
-
-        return
+        direction_to_move = theta1 + (math.pi/6)
+        child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
+        child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
+        effort1 = effort1 + step_size
+        return [child, effort1, direction_to_move]
 
     def theta60(node1, effort1, theta1):
-
-        return
+        child = node1.copy()
+        direction_to_move = theta1 + (math.pi/3)
+        child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
+        child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
+        effort1 = effort1 + step_size
+        return [child, effort1, direction_to_move]
 
     def theta_30(node1, effort1, theta1):
-
-        return
+        child = node1.copy()
+        direction_to_move = theta1 - (math.pi/6)
+        child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
+        child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
+        effort1 = effort1 + step_size
+        return [child, effort1, direction_to_move]
 
     def theta_60(node1, effort1, theta1):
-
-        return
+        child = node1.copy()
+        direction_to_move = theta1 - (math.pi/3)
+        child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
+        child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
+        effort1 = effort1 + step_size
+        return [child, effort1, direction_to_move]
 
 
     new_child = list()
