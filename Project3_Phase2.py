@@ -264,3 +264,30 @@ while True:
     child_parent = compare_with_goal(filtered_children, same_parent)
     if child_parent is not None:
         break
+
+canvas[canvas_size[0] - goal[0], goal[1],:] = 128
+cv2.imshow("window",canvas[1:301, 1:401])
+#print(route)
+print("final cost is: ", visited_child_cost[-1])
+print("goal ",goal[0])
+
+
+
+#print(duplicate_costcanvas)
+#showing the obstacles in the canvas
+
+
+
+'''
+#visualization of the exploration of nodes
+print("Video is saving....")
+
+
+
+#visualizing the route to the goal node
+
+'''
+out.release()
+print("\n Video file of visualization has been saved")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
