@@ -99,24 +99,28 @@ def euclidean_distance(node):
 
 def check_if_visited(check, cs):
     nod = check.current        #checking with the red value of canvas
-    if canvas[(canvas_size[0] - 1) - nod[0],nod[1],2] == 255:
-        if duplicate_costcanvas[(canvas_size[0] - 1) - nod[0],nod[1]] > cs:
+    if canvas1[(canvas_size[0] - padding) - nod[0],nod[1],2] == 255:
+        if duplicate_costcanvas[(canvas_size[0] - padding) - nod[0],nod[1]] > cs:
             ind = visited_child_list.index(check.current)
             visited_parent_list[ind] = check.parent
             visited_child_cost[ind] = cs
-            #print("replaced")
+            print("replaced")
 
         ####################
         #############check if the cost previously computed is less or not if not then replace the parent
         return None
-    canvas[(canvas_size[0] - 1) - nod[0], nod[1], 2] = 255    #marking visited by changing the color of red band
-    duplicate_costcanvas[(canvas_size[0] - 1) - nod[0], nod[1],0] = cs
+    canvas1[(canvas_size[0] - padding) - nod[0], nod[1], 2] = 255    #marking visited by changing the color of red band
+    duplicate_costcanvas[(canvas_size[0] - padding) - nod[0], nod[1],0] = cs
+    if check.parent is not None:
+        pary = check.parent[0]
+        cury = check.current[0]
+        cv2.line(canvas, (check.parent[1],canvas_size[0]-pary), (check.current[1],canvas_size[0]-cury), (0,0,255), 1)
     #print(duplicate_costcanvas)
     visited_child_list.append(check.current)
     visited_parent_list.append(check.parent)
     visited_child_cost.append(cs)
-    #cv2.imshow("window",canvas[1:301, 1:401])
-    out.write(canvas[1:301, 1:401])
+    #cv2.imshow("window",canvas[padding:(300+padding),padding:(400+padding)])
+    out.write(canvas[padding:(300+padding),padding:(400+padding)])
     #cv2.waitKey(1)
     return check, cs
 
