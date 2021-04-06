@@ -86,7 +86,12 @@ def obstacles(st):
 def removing_from_queue():
     #print(queue1.size1())
     check = queue1.remove()
+    #print(check.current)
+    #print(astar_cost_list)
     cs = duplicate_costqueue.pop()
+    acs = astar_cost_list.pop()
+    #print("popped ",acs)
+    #print(check.current)
     #print("current ",check.current)
     #for_frames.append(visited_list)
     #print("queue size ",queue1.size())
