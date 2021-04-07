@@ -1,10 +1,8 @@
-
 import numpy as np
 import cv2
 import math
 
-out = cv2.VideoWriter('Exploration.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 60, (400,300))
-
+out = cv2.VideoWriter('Out_1.mp4',cv2.VideoWriter_fourcc(*'mp4v'), 60, (400,300))
 #defining the queue class to use as a data structure
 class queue():
     def __init__(self):
@@ -24,6 +22,11 @@ class queue():
 
     def size1(self):
         return len(self.pending)
+
+    def show(self):
+        for i in self.pending:
+            print(i.current,"    ",((i.theta)*180)/math.pi)
+        return
 
     def isempty(self):
         if self.pending == []:
@@ -45,83 +48,80 @@ class node():
 
 #defining obstacles as well as the boundaries of the map
 #st[0] = y coordinate in cartesian space     st[1] = x coordinate in cartesian space
+
 def obstacles(st):
-    if ((st[1] - (90+padding))**2 + (st[0] - (70+padding))**2) <= 1225:
-        canvas1[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        canvas[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        print("in circle ",st)
+    
+    cl = radius + clearance
+    s1 = 0.7
+    s2 = -1.42814
+    x1 = np.arctan(s1)
+    x2 = np.arctan(s2)
+    d1 = np.cos(np.pi - x1)
+    d2 = np.cos(np.pi - x2)
+    a = -(cl / d1)
+    b = -(cl / d2)
+    x3 = ((1 - s1) * 10)
+    x4 = ((1 - s2) * 10)
+    
+    if ((st[1] - (90+padding)) ** 2) + ((st[0] - (70+padding)) ** 2) <= ((35+cl)**2):
+        canvas1[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        canvas[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
         #print("coordinate is in circle")
         return None
 
-    elif (((st[1] - (246+padding)) / 60) ** 2) + (((st[0] - (145+padding)) / 30) ** 2) <= 1:
-        canvas1[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        canvas[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
+    elif (((st[1] - (246+padding)) / (60+cl)) ** 2) + (((st[0] - (145+padding)) / (30+cl)) ** 2) <= 1:
+        canvas1[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        canvas[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
         #print("coordinate is in ellipse")
-        print("in ellipse ",st)
         return None
 
-    elif (st[1] >= 200+padding and st[1] <= 210+padding and st[0] <= 280+padding and st[0] >= 230+padding):
-        canvas1[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        canvas[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
+    elif (st[0] <= ((280+padding) + cl) and st[1]>=((200+padding)-cl) and st[0]>=((230+padding)-cl) and st[1]<=((230+padding)+cl)) and not (st[0]<=((270+padding)-cl) and st[1]>=((210+padding)+cl) and st[0]>=((240+padding)+cl) and st[1]<=((230+padding)+cl)):
+        canvas1[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        canvas[canvas_size[0]-1-st[0]][st[1]][0] = 255
         #print("coordinate is in C shape")
-        print("in C ",st)
         return None
 
-    elif (st[1] >= 200+padding and st[1] <= 230+padding and st[0] <= 280+padding  and st[0] >= 270+padding):
-        canvas1[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        canvas[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        #print("coordinate is in C shape")
-        print("in C ",st)
+    elif (st[0] + (1.42814*st[1])) >= (200.8282 - b) and (st[0] - (0.7*st[1])) >= (77.3853 - a) and (st[0] + (1.42814*st[1])) <= (462.335 + b) and (st[0] - (0.7*st[1])) <= (101.79726 + a):
+        canvas1[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        canvas[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        #print("coordinate is in rectangle")#latest
         return None
 
-    elif (st[1] >= 200+padding and st[1] <= 230 +padding and st[0] <= 240+padding and st[0] >= 230+padding):
-        canvas1[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        canvas[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        #print("coordinate is in C shape")
-        print("in C ",st)
-        return None
-
-    elif (st[0]+padding) + (1.42814 * (st[1]+padding)) >= 176.5511 and (st[0]+padding) - (0.7 * (st[1]+padding)) >= 74.39 and (st[0]+padding) + (1.42814 * (st[1]+padding)) <= 428.06815 and (st[0]+padding) - (0.7 * (st[1]+padding)) <= 98.80545:
-        canvas1[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        canvas[(canvas_size[0]-padding)-st[0]][st[1]][0] = 255
-        #print("coordinate is in rectangle")
-        print("in rectangle ",st)
-        return None
-
-    elif st[1] < padding or st[1] >= canvas_size[1] - padding:
-        canvas1[st[0]][st[1]][0] = 255
-        canvas[st[0]][st[1]][0] = 255
+    elif (st[1] >= ((canvas_size[1]-padding) - cl)) or (st[1] <= cl+padding):
+        canvas1[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        canvas[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
         #print("coordinate is out of the map boundary")
-        print("in map ",st)
         return None
 
-    elif st[0] < padding  or st[0] >= canvas_size[0] - padding:
-        canvas1[st[0]][st[1]][0] = 255
-        canvas[st[0]][st[1]][0] = 255
+    elif (st[0] <= cl+padding) or (st[0] >= ((canvas_size[0]-padding) - cl)):
+        canvas1[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
+        canvas[(canvas_size[0]-1)-st[0]][st[1]][0] = 255
         #print("coordinate is out of the map boundary")
-        print("in map ",st)
         return None
+
     else :
         return st
 
+def goal_threshold():
+    for i in range(canvas_size[0]):
+        for j in range(canvas_size[1]):
+            if ((j - goal[0][1])**2 + (i - goal[0][0])**2) <= (step_size)**2:
+                canvas[(canvas_size[0]-1)-i,j,1] = 255
 
+    return None
 
 #removes from the queue
 def removing_from_queue():
-    #print(queue1.size1())
+    
     check = queue1.remove()
-    #print(check.current)
-    #print(astar_cost_list)
+
     cs = duplicate_costqueue.pop()
+    
     acs = astar_cost_list.pop()
-    #print("popped ",acs)
-    #print(check.current)
-    #print("current ",check.current)
-    #for_frames.append(visited_list)
-    #print("queue size ",queue1.size())
+    
     return check, cs
 
-#calculate euclidean distance
+#calculate euclidean distance which is the heuristic function
 def euclidean_distance(node):
     dist = ((goal[0][0] - node[0])**2 + (goal[0][1] - node[1])**2)**(1/2)
     return dist
@@ -129,29 +129,34 @@ def euclidean_distance(node):
 #checking if the node is in the queue or has been visited previously and then appending the parent to the visited_list
 def check_if_visited(check, cs):
     nod = check.current        #checking with the red value of canvas
-    if canvas1[(canvas_size[0] - padding) - nod[0],nod[1],2] == 255:
-        if duplicate_costcanvas[(canvas_size[0] - padding) - nod[0],nod[1]] > cs:
-            ind = visited_child_list.index(check.current)
-            visited_parent_list[ind] = check.parent
-            visited_child_cost[ind] = cs
-            print("replaced")
+    if canvas1[(canvas_size[0]-1) - nod[0],nod[1],2] == 255:
+        orient_info = canvas1[(canvas_size[0]-1) - nod[0],nod[1],:]
+        orient_ind = np.where(orient_info == 2)
+        for i in orient_ind:
+            for j in i:
+                if angle_list[j] == round((180*check.theta)/math.pi):
+                    if duplicate_costcanvas[(canvas_size[0]-1) - nod[0],nod[1]] > cs:
+                        ind = visited_child_list.index(check.current)
+                        visited_parent_list[ind] = check.parent
+                        visited_child_cost[ind] = cs
+                    return None
+                
+    canvas1[(canvas_size[0]-1) - nod[0], nod[1], 2] = 255    #marking visited by changing the color of red band
 
-        ####################
-        #############check if the cost previously computed is less or not if not then replace the parent
-        return None
-    canvas1[(canvas_size[0] - padding) - nod[0], nod[1], 2] = 255    #marking visited by changing the color of red band
-    duplicate_costcanvas[(canvas_size[0] - padding) - nod[0], nod[1],0] = cs
+    ind = angle_list.index(round((180*check.theta)/math.pi))
+
+    canvas1[(canvas_size[0]-1) - nod[0], nod[1], ind] = 2
+    duplicate_costcanvas[(canvas_size[0]-1) - nod[0], nod[1],0] = cs
     if check.parent is not None:
         pary = check.parent[0]
         cury = check.current[0]
-        cv2.line(canvas, (check.parent[1],canvas_size[0]-pary), (check.current[1],canvas_size[0]-cury), (0,0,255), 1)
-    #print(duplicate_costcanvas)
+        cv2.line(canvas, (check.parent[1],(canvas_size[0]-1)-pary), (check.current[1],(canvas_size[0]-1)-cury), (0,0,255), 1)
+
     visited_child_list.append(check.current)
     visited_parent_list.append(check.parent)
     visited_child_cost.append(cs)
-    #cv2.imshow("window",canvas[padding:(300+padding),padding:(400+padding)])
     out.write(canvas[padding:(300+padding),padding:(400+padding)])
-    #cv2.waitKey(1)
+
     return check, cs
 
 #this function performs actions and gets children
@@ -162,9 +167,10 @@ def super_move_function(currentnode, cs):
         direction_to_move = theta1
         child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
         child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
-        #print("parent ",node1)
-        #print("child ",child)
-        effort1 = effort1 + step_size
+
+        effort1 = effort1 + 1 #step_size
+        if direction_to_move >= (6.2831):
+            direction_to_move = direction_to_move - (2*math.pi)
         return [child, effort1, direction_to_move]
 
     def theta30(node1, effort1, theta1):
@@ -172,7 +178,10 @@ def super_move_function(currentnode, cs):
         direction_to_move = theta1 + (math.pi/6)
         child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
         child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
-        effort1 = effort1 + step_size
+
+        effort1 = effort1 + 1 #step_size
+        if direction_to_move >= (6.2831):
+            direction_to_move = direction_to_move - (2*math.pi)
         return [child, effort1, direction_to_move]
 
     def theta60(node1, effort1, theta1):
@@ -180,23 +189,32 @@ def super_move_function(currentnode, cs):
         direction_to_move = theta1 + (math.pi/3)
         child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
         child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
-        effort1 = effort1 + step_size
+
+        effort1 = effort1 + 1  #step_size
+        if direction_to_move >= (6.2831):
+            direction_to_move = direction_to_move - (2*math.pi)
         return [child, effort1, direction_to_move]
 
     def theta_30(node1, effort1, theta1):
         child = node1.copy()
-        direction_to_move = theta1 - (math.pi/6)
+        direction_to_move = theta1 + (330*math.pi/180)
         child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
         child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
-        effort1 = effort1 + step_size
+
+        effort1 = effort1 + 1 #step_size
+        if direction_to_move >= (6.2831):
+            direction_to_move = direction_to_move - (2*math.pi)
         return [child, effort1, direction_to_move]
 
     def theta_60(node1, effort1, theta1):
         child = node1.copy()
-        direction_to_move = theta1 - (math.pi/3)
+        direction_to_move = theta1 + (300*math.pi/180)
         child[0] = round(child[0] + (step_size* math.sin(direction_to_move)))
         child[1] = round(child[1] + (step_size* math.cos(direction_to_move)))
-        effort1 = effort1 + step_size
+
+        effort1 = effort1 + 1 #step_size
+        if direction_to_move >= (6.2831):
+            direction_to_move = direction_to_move - (2*math.pi)
         return [child, effort1, direction_to_move]
 
 
@@ -210,7 +228,6 @@ def super_move_function(currentnode, cs):
     new_child.append(theta_30(node, effort, orient))
     new_child.append(theta_60(node, effort, orient))
 
-    #new_child = np.array(new_child)
 
     return new_child, node
 
@@ -218,10 +235,9 @@ def super_move_function(currentnode, cs):
 def check_if_in_obstacle_space(children, parent1):
     valid_children = list()
     for i in children:
-        #print(i)
-        #print((canvas_size[0] - 1) - i[0][0])
-        if canvas1[(canvas_size[0] - padding) - i[0][0], i[0][1], 0] == 255:
-            print(i)
+        
+        if canvas1[(canvas_size[0]-1) - i[0][0], i[0][1], 0] == 255:
+            #print(i)
             continue
         valid_children.append(i)
 
@@ -233,7 +249,9 @@ def check_if_in_obstacle_space(children, parent1):
 #compares new children with goal state and adds them to the queue if the child is not the goal state
 def compare_with_goal(ultimate_children, parent1):
     for child in ultimate_children:
-        if child[0] == goal[0]:
+        
+        if canvas[(canvas_size[0]-1) - child[0][0], child[0][1], 1] == 255:
+            print(child[0])
             print("\n Goal has been reached \n")
             return child[0], parent1, child[1]
         else:
@@ -245,16 +263,15 @@ def compare_with_goal(ultimate_children, parent1):
             queue1.add(node(child[0], parent1, child[2]), index_to_append_in_queue)
 
     return None
-###########
-####check the location of the cost at visited list and append at that index in the queue
-######cuurently there are errors in implementation
 
 
 #main body of the code from this line and below
 padding = 10
+threshold = 0.5
 canvas_size = [300+(2*padding),400+(2*padding), 3]
 canvas = np.zeros((canvas_size[0],canvas_size[1], canvas_size[2]))
-canvas1 = np.zeros((canvas_size[0],canvas_size[1], canvas_size[2]))
+canvas1 = np.zeros((canvas_size[0],canvas_size[1], 3+12))
+visited_canvas = np.zeros((int(canvas_size[0]/threshold),int(canvas_size[1]/threshold),12))
 visited_child_list = list()
 visited_parent_list = list()
 visited_child_cost = list()
@@ -263,18 +280,16 @@ duplicate_costqueue = list()
 duplicate_costcanvas = np.zeros((canvas_size[0],canvas_size[1], 1))
 canvas = canvas.astype(np.uint8)
 for_frames = list()
+angle_list = [10,10,10, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
 
+radius = int(input("Enter the radius: "))
+clearance = int(input("Enter the clearance: "))
+    
 #marking obstacles
 for i in range(canvas_size[0]):
     for j in range(canvas_size[1]):
         obstacles([i,j])
 
-
-
-
-####################################
-#################################
-#the new node to be removed from the queue should be the one having least cost
 
 
 #taking the start and goal node from the user and checking if in obstacle space
@@ -289,15 +304,13 @@ while n > 0:
     y2 = input("Enter the y co-ordinate of the goal point: ")
     gl_theta = input("Enter the orientation of goal point: ")
     step_size = input("Enter the step size: ")
+    
     start.append([int(y1)+padding,int(x1)+padding])
-    start.append(int(st_theta))
+    start.append((int(st_theta)*math.pi)/180)
 
-    #start = np.array(start)
-    #start.append(0)
     goal.append([int(y2)+padding,int(x2)+padding])
-    goal.append(int(gl_theta))
-    #goal = np.array(goal)
-    #goal.append(1)
+    goal.append((int(gl_theta)*math.pi)/180)
+
     step_size = float(step_size)
     lis = [start, goal]
     strt = list()
@@ -310,17 +323,16 @@ while n > 0:
     else:
         n = 0
 
-#canvas[301 - goal[0]][goal[1]][2] = 255
 
-canvas[(canvas_size[0] -1)- goal[0][0], goal[0][1],1] = 255
+canvas[(canvas_size[0]-1)- goal[0][0], goal[0][1],1] = 255
 first_node = node(start[0], None, start[1])
 queue1 = queue()
 queue1.add(first_node,0)
 duplicate_costqueue.append(0)
 astar_cost_list.append(euclidean_distance(start[0]))
+goal_threshold()
 
-
-#calling the main functions of the Dijkstra
+#calling the main functions of the Astar
 while True:
     new_parent = None
     while new_parent is None:
@@ -345,44 +357,18 @@ route = list()
 while parent_info is not None:
     for i in visited_child_list:
         if parent_info == i:
-            print(i)
             parent_info = visited_parent_list[visited_child_list.index(i)]
-            canvas[(canvas_size[0] - padding) - i[0],i[1],1] = 255
+            if parent_info is not None:
+                cv2.line(canvas, (i[1],(canvas_size[0]-1)-i[0]), (parent_info[1],(canvas_size[0]-1)-parent_info[0]), (128,128,128), 2)
+            
             out.write(canvas[padding:(300+padding),padding:(400+padding)])
-            #print(i)
-            #cv2.imshow("frame",canvas[padding:(300+padding),padding:(400+padding)])
-            #cv2.waitKey(1)
             route.append(i)
             break
 
+canvas[(canvas_size[0]-1)- goal[0][0], goal[0][1],1] = 255
 
-
-
-canvas[(canvas_size[0] -1)- goal[0][0], goal[0][1],1] = 255
-print(canvas.shape)
 cv2.imshow("window",canvas[padding:(300+padding),padding:(400+padding)])
-print(route)
 
-#######################################
-#print("final cost is: ", visited_child_cost[-1])
-#print("goal ",goal[0])
-
-
-
-#print(duplicate_costcanvas)
-#showing the obstacles in the canvas
-
-
-
-'''
-#visualization of the exploration of nodes
-print("Video is saving....")
-
-
-
-#visualizing the route to the goal node
-
-'''
 out.release()
 print("\n Video file of visualization has been saved")
 cv2.waitKey(0)
